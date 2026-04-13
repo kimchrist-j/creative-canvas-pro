@@ -1,14 +1,16 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
+import { useTheme } from '@/hooks/useTheme';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
-import { Plus, FileText, Layout, LogOut, Trash2, Clock, Loader2 } from 'lucide-react';
+import { Plus, FileText, Layout, LogOut, Trash2, Clock, Loader2, Moon, Sun } from 'lucide-react';
 import OnboardingGuide from '@/components/OnboardingGuide';
 
 export default function Dashboard() {
   const { user, signOut } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [resumes, setResumes] = useState<any[]>([]);
@@ -50,8 +52,11 @@ export default function Dashboard() {
           </div>
           <span className="text-lg font-bold text-foreground">ResumeForge</span>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
           <span className="text-sm text-muted-foreground hidden sm:block">{user?.email}</span>
+          <Button variant="ghost" size="icon" onClick={toggleTheme} className="h-9 w-9">
+            {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+          </Button>
           <Button variant="ghost" size="sm" onClick={signOut}>
             <LogOut className="h-4 w-4" />
             <span className="hidden sm:inline ml-1">Sign Out</span>
