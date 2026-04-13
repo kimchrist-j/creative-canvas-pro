@@ -31,7 +31,7 @@ export default function Auth() {
       } else if (mode === 'register') {
         const { error } = await signUp(email, password, fullName);
         if (error) throw error;
-        toast({ title: 'Account created!', description: 'Check your email for a verification link. A welcome email is on its way!' });
+        toast({ title: 'Welcome aboard!', description: 'Your account is ready. A welcome email is on its way!' });
       } else {
         const { error } = await signIn(email, password);
         if (error) throw error;
