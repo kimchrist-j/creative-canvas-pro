@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
@@ -8,9 +8,15 @@ import ResumePreview from '@/components/ResumePreview';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
-import { Download, ChevronLeft, Save, Loader2, Menu, X, ZoomIn, ZoomOut } from 'lucide-react';
+import { Download, ChevronLeft, Save, Loader2, Menu, X, ZoomIn, ZoomOut, FileText, Columns, AlignCenter } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+
+const TEMPLATES = [
+  { id: 'classic', label: 'Classic', icon: FileText, desc: 'Traditional two-column layout' },
+  { id: 'modern', label: 'Modern', icon: Columns, desc: 'Dark sidebar with timeline' },
+  { id: 'minimal', label: 'Minimal', icon: AlignCenter, desc: 'Clean centered design' },
+];
 
 export default function ResumeEditor() {
   const { user } = useAuth();
@@ -19,17 +25,20 @@ export default function ResumeEditor() {
   const { toast } = useToast();
   const [data, setData] = useState<ResumeData>(defaultResumeData);
   const [title, setTitle] = useState('My Resume');
+  const [template, setTemplate] = useState('classic');
   const [saving, setSaving] = useState(false);
   const [downloading, setDownloading] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [zoom, setZoom] = useState(0.55);
   const [saved, setSaved] = useState(true);
+  const [showTemplates, setShowTemplates] = useState(false);
 
   useEffect(() => {
     if (id && id !== 'new') {
       supabase.from('resumes').select('*').eq('id', id).single().then(({ data: resume }) => {
         if (resume) {
           setTitle(resume.title);
+          setTemplate(resume.template || 'classic');
           setData(resume.content as unknown as ResumeData);
         }
       });
@@ -41,9 +50,9 @@ export default function ResumeEditor() {
     setSaving(true);
     try {
       if (id && id !== 'new') {
-        await supabase.from('resumes').update({ title, content: data as any, updated_at: new Date().toISOString() }).eq('id', id);
+        await supabase.from('resumes').update({ title, template, content: data as any, updated_at: new Date().toISOString() }).eq('id', id);
       } else {
-        const { data: newResume } = await supabase.from('resumes').insert({ user_id: user.id, title, content: data as any }).select().single();
+        const { data: newResume } = await supabase.from('resumes').insert({ user_id: user.id, title, template, content: data as any }).select().single();
         if (newResume) navigate(`/editor/${newResume.id}`, { replace: true });
       }
       setSaved(true);
@@ -63,10 +72,8 @@ export default function ResumeEditor() {
     if (!user) return;
     setDownloading(true);
     try {
-      // Check download count
       const { data: profile } = await supabase.from('profiles').select('free_downloads_used').eq('user_id', user.id).single();
       if (profile && profile.free_downloads_used >= 1) {
-        // Redirect to payment
         window.open('https://checkout.fapshi.com/link/30934367', '_blank');
         setDownloading(false);
         return;
@@ -74,13 +81,9 @@ export default function ResumeEditor() {
 
       const el = document.getElementById('resume-preview');
       if (!el) return;
-      
-      // Temporarily reset transform for accurate capture
       const origTransform = el.style.transform;
       el.style.transform = 'scale(1)';
-      
       const canvas = await html2canvas(el, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
-      
       el.style.transform = origTransform;
 
       const pdf = new jsPDF('p', 'mm', 'a4');
@@ -90,7 +93,6 @@ export default function ResumeEditor() {
       pdf.addImage(imgData, 'PNG', 0, 0, pdfW, pdfH);
       pdf.save(`${title || 'resume'}.pdf`);
 
-      // Increment download count
       await supabase.from('profiles').update({ free_downloads_used: (profile?.free_downloads_used || 0) + 1 }).eq('user_id', user.id);
       toast({ title: 'Downloaded!', description: 'Your resume has been downloaded as PDF.' });
     } catch (err: any) {
@@ -122,6 +124,30 @@ export default function ResumeEditor() {
           </div>
         </div>
         <div className="flex items-center gap-2">
+          {/* Template switcher */}
+          <div className="relative">
+            <Button variant="outline" size="sm" onClick={() => setShowTemplates(!showTemplates)} className="hidden md:flex">
+              <FileText className="h-4 w-4 mr-1" /> Template
+            </Button>
+            {showTemplates && (
+              <div className="absolute top-full right-0 mt-2 w-64 bg-card border border-border rounded-xl shadow-xl z-50 p-2">
+                {TEMPLATES.map(t => (
+                  <button
+                    key={t.id}
+                    onClick={() => { setTemplate(t.id); setShowTemplates(false); setSaved(false); }}
+                    className={`w-full flex items-center gap-3 p-3 rounded-lg text-left transition-colors ${template === t.id ? 'bg-primary/10 text-primary' : 'hover:bg-surface-hover text-foreground'}`}
+                  >
+                    <t.icon className="h-5 w-5 shrink-0" />
+                    <div>
+                      <p className="text-sm font-medium">{t.label}</p>
+                      <p className="text-xs text-muted-foreground">{t.desc}</p>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
           <div className="hidden md:flex items-center gap-1 mr-2">
             <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setZoom(Math.max(0.3, zoom - 0.1))}>
               <ZoomOut className="h-3.5 w-3.5" />
@@ -143,15 +169,12 @@ export default function ResumeEditor() {
       </header>
 
       <div className="flex-1 flex overflow-hidden">
-        {/* Sidebar */}
         <aside className={`${sidebarOpen ? 'w-80 md:w-72 lg:w-80' : 'w-0'} shrink-0 border-r border-border bg-background transition-all overflow-hidden absolute lg:relative z-10 h-[calc(100vh-3.5rem)] lg:h-auto`}>
           <EditorSidebar data={data} onChange={handleChange} />
         </aside>
-
-        {/* Preview area */}
         <main className="flex-1 overflow-auto bg-surface p-4 md:p-8 flex justify-center">
           <div style={{ width: 794 * zoom, height: 1123 * zoom }}>
-            <ResumePreview data={data} scale={zoom} />
+            <ResumePreview data={data} scale={zoom} template={template} />
           </div>
         </main>
       </div>

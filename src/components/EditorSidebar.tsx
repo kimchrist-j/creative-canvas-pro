@@ -1,10 +1,12 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { ResumeData } from '@/types/resume';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
-import { Plus, Minus, ChevronDown, ChevronRight, Trash2 } from 'lucide-react';
+import { Plus, Minus, Trash2, Camera, Loader2 } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/hooks/useAuth';
 
 interface EditorSidebarProps {
   data: ResumeData;
@@ -25,6 +27,10 @@ function Section({ title, defaultOpen = false, children }: { title: string; defa
 }
 
 export default function EditorSidebar({ data, onChange }: EditorSidebarProps) {
+  const { user } = useAuth();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
+
   const update = (path: string, value: any) => {
     const keys = path.split('.');
     const newData = JSON.parse(JSON.stringify(data));
@@ -34,26 +40,38 @@ export default function EditorSidebar({ data, onChange }: EditorSidebarProps) {
     onChange(newData);
   };
 
+  const handlePhotoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user) return;
+    setUploading(true);
+    try {
+      const ext = file.name.split('.').pop();
+      const path = `${user.id}/photo-${Date.now()}.${ext}`;
+      const { error } = await supabase.storage.from('avatars').upload(path, file, { upsert: true });
+      if (error) throw error;
+      const { data: urlData } = supabase.storage.from('avatars').getPublicUrl(path);
+      update('personalInfo.photo', urlData.publicUrl);
+    } catch (err: any) {
+      console.error('Upload failed:', err.message);
+    }
+    setUploading(false);
+  };
+
   const addEducation = () => {
     onChange({ ...data, education: [...data.education, { id: Date.now().toString(), startYear: '', endYear: '', degree: '', institution: '' }] });
   };
-
   const removeEducation = (id: string) => {
     onChange({ ...data, education: data.education.filter(e => e.id !== id) });
   };
-
   const updateEducation = (id: string, field: string, value: string) => {
     onChange({ ...data, education: data.education.map(e => e.id === id ? { ...e, [field]: value } : e) });
   };
-
   const addExperience = () => {
     onChange({ ...data, experience: [...data.experience, { id: Date.now().toString(), startYear: '', endYear: '', jobTitle: '', company: '', description: '' }] });
   };
-
   const removeExperience = (id: string) => {
     onChange({ ...data, experience: data.experience.filter(e => e.id !== id) });
   };
-
   const updateExperience = (id: string, field: string, value: string) => {
     onChange({ ...data, experience: data.experience.map(e => e.id === id ? { ...e, [field]: value } : e) });
   };
@@ -64,6 +82,38 @@ export default function EditorSidebar({ data, onChange }: EditorSidebarProps) {
   return (
     <div className="h-full overflow-y-auto scrollbar-thin">
       <Section title="Personal Information" defaultOpen>
+        {/* Profile Photo Upload */}
+        <div className="flex items-center gap-4 mb-2">
+          <div className="relative group">
+            {data.personalInfo.photo ? (
+              <img src={data.personalInfo.photo} alt="Profile" className="w-16 h-16 rounded-full object-cover border-2 border-border" />
+            ) : (
+              <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center text-lg font-bold text-muted-foreground">
+                {data.personalInfo.firstName?.[0] || '?'}{data.personalInfo.lastName?.[0] || ''}
+              </div>
+            )}
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              disabled={uploading}
+              className="absolute inset-0 rounded-full bg-foreground/0 group-hover:bg-foreground/40 flex items-center justify-center transition-colors cursor-pointer"
+            >
+              {uploading ? (
+                <Loader2 className="h-5 w-5 text-background animate-spin opacity-0 group-hover:opacity-100 transition-opacity" />
+              ) : (
+                <Camera className="h-5 w-5 text-background opacity-0 group-hover:opacity-100 transition-opacity" />
+              )}
+            </button>
+            <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handlePhotoUpload} />
+          </div>
+          <div className="flex-1">
+            <p className="text-xs font-medium text-foreground">Profile Photo</p>
+            <p className="text-xs text-muted-foreground">Click to upload</p>
+            {data.personalInfo.photo && (
+              <button onClick={() => update('personalInfo.photo', '')} className="text-xs text-destructive hover:underline mt-1">Remove</button>
+            )}
+          </div>
+        </div>
+
         <div className="grid grid-cols-2 gap-3">
           <div className="space-y-1">
             <Label className="text-xs">First Name</Label>
@@ -97,7 +147,7 @@ export default function EditorSidebar({ data, onChange }: EditorSidebarProps) {
       </Section>
 
       <Section title="Experience" defaultOpen>
-        {data.experience.map((exp, i) => (
+        {data.experience.map((exp) => (
           <div key={exp.id} className="space-y-2 bg-surface p-3 rounded-lg relative">
             <button onClick={() => removeExperience(exp.id)} className="absolute top-2 right-2 text-muted-foreground hover:text-destructive">
               <Trash2 className="h-3 w-3" />
