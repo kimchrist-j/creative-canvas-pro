@@ -8,7 +8,7 @@ import { useToast } from '@/hooks/use-toast';
 import {
   ChevronLeft, Download, Loader2, MousePointer, Square, Circle, Type, Minus, Image,
   Undo2, Redo2, ZoomIn, ZoomOut, Trash2, Copy, Layers, PanelRight,
-  RectangleHorizontal, LayoutDashboard, SidebarIcon, PanelTop, List, UserCircle, Dialog
+  RectangleHorizontal, LayoutDashboard, SidebarIcon, PanelTop, List, UserCircle, Square as DialogIcon
 } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
