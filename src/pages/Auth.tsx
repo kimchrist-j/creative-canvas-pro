@@ -1,14 +1,16 @@
 import { useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
+import { useTheme } from '@/hooks/useTheme';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, FileText, Palette, Layout } from 'lucide-react';
+import { Loader2, FileText, Palette, Layout, Moon, Sun } from 'lucide-react';
 
 export default function Auth() {
   const { user, loading, signIn, signUp, resetPassword } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const [mode, setMode] = useState<'login' | 'register' | 'forgot'>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -77,8 +79,10 @@ export default function Auth() {
         <p className="text-primary-foreground/40 text-sm">© 2024 ResumeForge. All rights reserved.</p>
       </div>
 
-      {/* Right panel - form */}
-      <div className="flex-1 flex items-center justify-center p-8">
+      <div className="flex-1 flex items-center justify-center p-8 relative">
+        <Button variant="ghost" size="icon" onClick={toggleTheme} className="absolute top-4 right-4 h-9 w-9">
+          {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+        </Button>
         <div className="w-full max-w-md space-y-8 animate-fade-in">
           <div className="lg:hidden flex items-center gap-3 justify-center mb-8">
             <div className="h-10 w-10 rounded-lg bg-primary flex items-center justify-center">
