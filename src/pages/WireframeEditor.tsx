@@ -34,7 +34,7 @@ const TOOLS = [
     { id: 'hero', icon: Layers, label: 'Hero Section' },
     { id: 'list', icon: List, label: 'List' },
     { id: 'avatar', icon: UserCircle, label: 'Avatar' },
-    { id: 'modal', icon: Dialog, label: 'Modal' },
+    { id: 'modal', icon: DialogIcon, label: 'Modal' },
   ]},
 ];
 
