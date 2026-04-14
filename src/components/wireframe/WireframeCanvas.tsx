@@ -118,10 +118,10 @@ export default function WireframeCanvas({ elements, selectedId, tool, gridSize, 
   return (
     <div
       ref={canvasRef}
-      className="relative bg-background border border-border rounded-lg shadow-sm"
+      className="relative bg-background"
       style={{
-        width: 1440,
-        height: 900,
+        width: canvasWidth,
+        height: canvasHeight,
         cursor: tool !== 'select' ? 'crosshair' : dragging ? 'grabbing' : 'default',
         transform: `scale(${zoom})`,
         transformOrigin: 'top left',
