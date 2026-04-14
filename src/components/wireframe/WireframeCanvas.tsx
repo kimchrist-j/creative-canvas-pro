@@ -11,6 +11,8 @@ interface Props {
   onSelect: (id: string | null) => void;
   onUpdate: (elements: WireframeElement[]) => void;
   onAdd: (type: WireframeElement['type'], x: number, y: number) => void;
+  canvasWidth?: number;
+  canvasHeight?: number;
 }
 
 export default function WireframeCanvas({ elements, selectedId, tool, gridSize, zoom, onSelect, onUpdate, onAdd }: Props) {
