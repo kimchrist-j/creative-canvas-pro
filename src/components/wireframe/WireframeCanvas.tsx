@@ -11,9 +11,11 @@ interface Props {
   onSelect: (id: string | null) => void;
   onUpdate: (elements: WireframeElement[]) => void;
   onAdd: (type: WireframeElement['type'], x: number, y: number) => void;
+  canvasWidth?: number;
+  canvasHeight?: number;
 }
 
-export default function WireframeCanvas({ elements, selectedId, tool, gridSize, zoom, onSelect, onUpdate, onAdd }: Props) {
+export default function WireframeCanvas({ elements, selectedId, tool, gridSize, zoom, onSelect, onUpdate, onAdd, canvasWidth = 1440, canvasHeight = 900 }: Props) {
   const canvasRef = useRef<HTMLDivElement>(null);
   const [dragging, setDragging] = useState<{ id: string; offsetX: number; offsetY: number; type: 'move' | 'resize'; handle?: string } | null>(null);
   const [drawing, setDrawing] = useState<{ startX: number; startY: number; type: WireframeElement['type'] } | null>(null);
@@ -116,10 +118,10 @@ export default function WireframeCanvas({ elements, selectedId, tool, gridSize, 
   return (
     <div
       ref={canvasRef}
-      className="relative bg-background border border-border rounded-lg shadow-sm"
+      className="relative bg-background"
       style={{
-        width: 1440,
-        height: 900,
+        width: canvasWidth,
+        height: canvasHeight,
         cursor: tool !== 'select' ? 'crosshair' : dragging ? 'grabbing' : 'default',
         transform: `scale(${zoom})`,
         transformOrigin: 'top left',
