@@ -15,7 +15,7 @@ interface Props {
   canvasHeight?: number;
 }
 
-export default function WireframeCanvas({ elements, selectedId, tool, gridSize, zoom, onSelect, onUpdate, onAdd }: Props) {
+export default function WireframeCanvas({ elements, selectedId, tool, gridSize, zoom, onSelect, onUpdate, onAdd, canvasWidth = 1440, canvasHeight = 900 }: Props) {
   const canvasRef = useRef<HTMLDivElement>(null);
   const [dragging, setDragging] = useState<{ id: string; offsetX: number; offsetY: number; type: 'move' | 'resize'; handle?: string } | null>(null);
   const [drawing, setDrawing] = useState<{ startX: number; startY: number; type: WireframeElement['type'] } | null>(null);
