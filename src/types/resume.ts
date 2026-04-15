@@ -50,7 +50,7 @@ export const defaultResumeData: ResumeData = {
     { id: '2', startYear: '2017', endYear: '2019', jobTitle: 'Junior UX Designer', company: 'Company Name', description: 'Lorem ipsum is simply dummy text of the printing and typesetting industry.' },
     { id: '3', startYear: '2015', endYear: '2017', jobTitle: 'UX Designer', company: 'Company Name', description: 'Lorem ipsum is simply dummy text of the printing and typesetting industry.' },
   ],
-  skills: ['UI/UX Design', 'Figma', 'Adobe XD', 'Prototyping', 'User Research'],
+  skills: [{ name: 'UI/UX Design' }, { name: 'Figma', icon: 'https://cdn.simpleicons.org/figma' }, { name: 'Adobe XD', icon: 'https://cdn.simpleicons.org/adobexd' }, { name: 'Prototyping' }, { name: 'User Research' }],
   hobbies: ['Photography', 'Travel', 'Reading'],
   websites: [],
 };
