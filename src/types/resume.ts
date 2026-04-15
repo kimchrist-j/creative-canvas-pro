@@ -24,7 +24,7 @@ export interface ResumeData {
     company: string;
     description: string;
   }>;
-  skills: string[];
+  skills: Array<{ name: string; icon?: string }>;
   hobbies: string[];
   websites: Array<{ id: string; label: string; url: string }>;
 }
