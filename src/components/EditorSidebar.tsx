@@ -4,9 +4,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
-import { Plus, Minus, Trash2, Camera, Loader2 } from 'lucide-react';
+import { Plus, Minus, Trash2, Camera, Loader2, Sparkles } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
+import SkillIconPicker from '@/components/SkillIconPicker';
 
 interface EditorSidebarProps {
   data: ResumeData;
@@ -30,6 +31,7 @@ export default function EditorSidebar({ data, onChange }: EditorSidebarProps) {
   const { user } = useAuth();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
+  const [showIconPicker, setShowIconPicker] = useState(false);
 
   const update = (path: string, value: any) => {
     const keys = path.split('.');
@@ -78,6 +80,14 @@ export default function EditorSidebar({ data, onChange }: EditorSidebarProps) {
 
   const [newSkill, setNewSkill] = useState('');
   const [newHobby, setNewHobby] = useState('');
+
+  const addSkill = (name: string, icon?: string) => {
+    onChange({ ...data, skills: [...data.skills, { name, icon }] });
+  };
+
+  const removeSkill = (index: number) => {
+    onChange({ ...data, skills: data.skills.filter((_, j) => j !== index) });
+  };
 
   return (
     <div className="h-full overflow-y-auto scrollbar-thin">
@@ -188,18 +198,30 @@ export default function EditorSidebar({ data, onChange }: EditorSidebarProps) {
       <Section title="Skills">
         <div className="flex flex-wrap gap-2 mb-2">
           {data.skills.map((skill, i) => (
-            <span key={i} className="text-xs bg-secondary text-secondary-foreground px-2 py-1 rounded-full flex items-center gap-1">
-              {skill}
-              <button onClick={() => onChange({ ...data, skills: data.skills.filter((_, j) => j !== i) })} className="hover:text-destructive">×</button>
+            <span key={i} className="text-xs bg-secondary text-secondary-foreground px-2 py-1 rounded-full flex items-center gap-1.5">
+              {skill.icon && <img src={skill.icon} alt="" className="w-3.5 h-3.5 object-contain" />}
+              {skill.name}
+              <button onClick={() => removeSkill(i)} className="hover:text-destructive ml-0.5">×</button>
             </span>
           ))}
         </div>
         <div className="flex gap-2">
-          <Input className="h-8 text-sm" placeholder="Add skill" value={newSkill} onChange={e => setNewSkill(e.target.value)}
-            onKeyDown={e => { if (e.key === 'Enter' && newSkill.trim()) { onChange({ ...data, skills: [...data.skills, newSkill.trim()] }); setNewSkill(''); } }} />
-          <Button variant="outline" size="sm" className="h-8" onClick={() => { if (newSkill.trim()) { onChange({ ...data, skills: [...data.skills, newSkill.trim()] }); setNewSkill(''); } }}>
+          <Input className="h-8 text-sm" placeholder="Type a skill" value={newSkill} onChange={e => setNewSkill(e.target.value)}
+            onKeyDown={e => { if (e.key === 'Enter' && newSkill.trim()) { addSkill(newSkill.trim()); setNewSkill(''); } }} />
+          <Button variant="outline" size="sm" className="h-8" onClick={() => { if (newSkill.trim()) { addSkill(newSkill.trim()); setNewSkill(''); } }}>
             <Plus className="h-3 w-3" />
           </Button>
+        </div>
+        <div className="relative">
+          <Button variant="ghost" size="sm" className="text-xs gap-1.5 w-full justify-start" onClick={() => setShowIconPicker(!showIconPicker)}>
+            <Sparkles className="h-3 w-3" /> Browse skill icons & logos
+          </Button>
+          {showIconPicker && (
+            <SkillIconPicker
+              onSelect={(name, iconUrl) => addSkill(name, iconUrl)}
+              onClose={() => setShowIconPicker(false)}
+            />
+          )}
         </div>
       </Section>
 
