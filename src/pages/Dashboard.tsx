@@ -5,7 +5,7 @@ import { useTheme } from '@/hooks/useTheme';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
-import { Plus, FileText, Layout, LogOut, Trash2, Clock, Loader2, Moon, Sun } from 'lucide-react';
+import { Plus, FileText, Layout, LogOut, Trash2, Clock, Loader2, Moon, Sun, FileDown } from 'lucide-react';
 import OnboardingGuide from '@/components/OnboardingGuide';
 
 export default function Dashboard() {
@@ -94,6 +94,17 @@ export default function Dashboard() {
             </div>
             <span className="font-medium text-foreground">New Wireframe</span>
             <span className="text-xs text-muted-foreground">Design web & mobile layouts</span>
+          </button>
+
+          <button
+            onClick={() => navigate('/pdf-to-word')}
+            className="border-2 border-dashed border-border rounded-xl p-8 flex flex-col items-center gap-3 hover:border-foreground/30 hover:bg-surface transition-all group"
+          >
+            <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+              <FileDown className="h-6 w-6 text-foreground" />
+            </div>
+            <span className="font-medium text-foreground">PDF → Word</span>
+            <span className="text-xs text-muted-foreground">Convert PDF to editable Word</span>
           </button>
         </div>
 
