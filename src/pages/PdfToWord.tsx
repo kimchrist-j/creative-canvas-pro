@@ -148,7 +148,7 @@ export default function PdfToWord() {
       try {
         const ops = await page.getOperatorList();
         for (let j = 0; j < ops.fnArray.length; j++) {
-          if (ops.fnArray[j] === pdfjsLib.OPS.paintImageXObject || ops.fnArray[j] === pdfjsLib.OPS.paintJpegXObject) {
+          if (ops.fnArray[j] === pdfjsLib.OPS.paintImageXObject || ops.fnArray[j] === pdfjsLib.OPS.paintXObject) {
             try {
               const imgName = ops.argsArray[j][0];
               const img = await page.objs.get(imgName);
@@ -181,7 +181,7 @@ export default function PdfToWord() {
       canvas.width = viewport.width;
       canvas.height = viewport.height;
       const ctx = canvas.getContext('2d')!;
-      await page.render({ canvasContext: ctx, viewport }).promise;
+      await page.render({ canvasContext: ctx, viewport, canvas } as any).promise;
       setPreviewPages(prev => [...prev, canvas.toDataURL('image/jpeg', 0.8)]);
     }
 
