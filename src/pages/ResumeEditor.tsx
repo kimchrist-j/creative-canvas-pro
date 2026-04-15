@@ -8,7 +8,7 @@ import ResumePreview from '@/components/ResumePreview';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
-import { Download, ChevronLeft, Save, Loader2, Menu, X, ZoomIn, ZoomOut, FileText, Columns, AlignCenter } from 'lucide-react';
+import { Download, ChevronLeft, Save, Loader2, Menu, X, ZoomIn, ZoomOut, FileText, Columns, AlignCenter, PenTool, Palette, Award } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 
@@ -16,6 +16,9 @@ const TEMPLATES = [
   { id: 'classic', label: 'Classic', icon: FileText, desc: 'Traditional two-column layout' },
   { id: 'modern', label: 'Modern', icon: Columns, desc: 'Dark sidebar with timeline' },
   { id: 'minimal', label: 'Minimal', icon: AlignCenter, desc: 'Clean centered design' },
+  { id: 'bold', label: 'Bold', icon: PenTool, desc: 'Black hero header, editorial' },
+  { id: 'creative', label: 'Creative', icon: Palette, desc: 'Yellow accent, graphic style' },
+  { id: 'executive', label: 'Executive', icon: Award, desc: 'Cover banner, card layout' },
 ];
 
 export default function ResumeEditor() {
