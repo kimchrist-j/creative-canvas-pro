@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
+import { useLanguage } from '@/hooks/useLanguage';
 import { supabase } from '@/integrations/supabase/client';
 import { ResumeData, defaultResumeData } from '@/types/resume';
 import EditorSidebar from '@/components/EditorSidebar';
@@ -8,7 +9,8 @@ import ResumePreview from '@/components/ResumePreview';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
-import { Download, ChevronLeft, Save, Loader2, Menu, X, ZoomIn, ZoomOut, FileText, Columns, AlignCenter, PenTool, Palette, Award } from 'lucide-react';
+import { Download, ChevronLeft, Save, Loader2, Menu, X, ZoomIn, ZoomOut, FileText, Columns, AlignCenter, PenTool, Palette, Award, BookOpen, GraduationCap, Code2, Gem } from 'lucide-react';
+import LanguageToggle from '@/components/LanguageToggle';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 
@@ -19,10 +21,15 @@ const TEMPLATES = [
   { id: 'bold', label: 'Bold', icon: PenTool, desc: 'Black hero header, editorial' },
   { id: 'creative', label: 'Creative', icon: Palette, desc: 'Yellow accent, graphic style' },
   { id: 'executive', label: 'Executive', icon: Award, desc: 'Cover banner, card layout' },
+  { id: 'formal', label: 'Formal', icon: BookOpen, desc: 'No photo, traditional serif' },
+  { id: 'academic', label: 'Academic', icon: GraduationCap, desc: 'Research/academic style' },
+  { id: 'tech', label: 'Tech', icon: Code2, desc: 'Developer-focused, dark sidebar' },
+  { id: 'elegant', label: 'Elegant', icon: Gem, desc: 'Sophisticated warm tones' },
 ];
 
 export default function ResumeEditor() {
   const { user } = useAuth();
+  const { t } = useLanguage();
   const { id } = useParams();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -66,10 +73,7 @@ export default function ResumeEditor() {
     setSaving(false);
   };
 
-  const handleChange = (newData: ResumeData) => {
-    setData(newData);
-    setSaved(false);
-  };
+  const handleChange = (newData: ResumeData) => { setData(newData); setSaved(false); };
 
   const handleDownload = async () => {
     if (!user) return;
@@ -81,21 +85,18 @@ export default function ResumeEditor() {
         setDownloading(false);
         return;
       }
-
       const el = document.getElementById('resume-preview');
       if (!el) return;
       const origTransform = el.style.transform;
       el.style.transform = 'scale(1)';
       const canvas = await html2canvas(el, { scale: 2, useCORS: true, backgroundColor: '#ffffff' });
       el.style.transform = origTransform;
-
       const pdf = new jsPDF('p', 'mm', 'a4');
       const imgData = canvas.toDataURL('image/png');
       const pdfW = pdf.internal.pageSize.getWidth();
       const pdfH = (canvas.height * pdfW) / canvas.width;
       pdf.addImage(imgData, 'PNG', 0, 0, pdfW, pdfH);
       pdf.save(`${title || 'resume'}.pdf`);
-
       await supabase.from('profiles').update({ free_downloads_used: (profile?.free_downloads_used || 0) + 1 }).eq('user_id', user.id);
       toast({ title: 'Downloaded!', description: 'Your resume has been downloaded as PDF.' });
     } catch (err: any) {
@@ -106,7 +107,6 @@ export default function ResumeEditor() {
 
   return (
     <div className="h-screen flex flex-col bg-background">
-      {/* Top bar */}
       <header className="h-14 border-b border-border flex items-center justify-between px-4 bg-background shrink-0">
         <div className="flex items-center gap-3">
           <Button variant="ghost" size="icon" className="lg:hidden" onClick={() => setSidebarOpen(!sidebarOpen)}>
@@ -116,41 +116,32 @@ export default function ResumeEditor() {
             <ChevronLeft className="h-4 w-4 mr-1" /> Back
           </Button>
           <div className="h-4 w-px bg-border" />
-          <Input
-            value={title}
-            onChange={e => { setTitle(e.target.value); setSaved(false); }}
-            className="h-8 text-sm font-medium border-none bg-transparent focus-visible:ring-0 w-40 md:w-60"
-          />
+          <Input value={title} onChange={e => { setTitle(e.target.value); setSaved(false); }}
+            className="h-8 text-sm font-medium border-none bg-transparent focus-visible:ring-0 w-40 md:w-60" />
           <div className="flex items-center gap-1.5">
-            <div className={`h-2 w-2 rounded-full ${saved ? 'bg-success' : 'bg-warning'}`} />
+            <div className={`h-2 w-2 rounded-full ${saved ? 'bg-green-500' : 'bg-yellow-500'}`} />
             <span className="text-xs text-muted-foreground">{saved ? 'Saved' : 'Unsaved'}</span>
           </div>
         </div>
         <div className="flex items-center gap-2">
-          {/* Template switcher */}
+          <LanguageToggle />
           <div className="relative">
             <Button variant="outline" size="sm" onClick={() => setShowTemplates(!showTemplates)} className="hidden md:flex">
-              <FileText className="h-4 w-4 mr-1" /> Template
+              <FileText className="h-4 w-4 mr-1" /> {t('editor.template')}
             </Button>
             {showTemplates && (
-              <div className="absolute top-full right-0 mt-2 w-64 bg-card border border-border rounded-xl shadow-xl z-50 p-2">
-                {TEMPLATES.map(t => (
-                  <button
-                    key={t.id}
-                    onClick={() => { setTemplate(t.id); setShowTemplates(false); setSaved(false); }}
-                    className={`w-full flex items-center gap-3 p-3 rounded-lg text-left transition-colors ${template === t.id ? 'bg-primary/10 text-primary' : 'hover:bg-surface-hover text-foreground'}`}
-                  >
-                    <t.icon className="h-5 w-5 shrink-0" />
-                    <div>
-                      <p className="text-sm font-medium">{t.label}</p>
-                      <p className="text-xs text-muted-foreground">{t.desc}</p>
-                    </div>
+              <div className="absolute top-full right-0 mt-2 w-64 bg-card border border-border rounded-xl shadow-xl z-50 p-2 max-h-80 overflow-y-auto">
+                {TEMPLATES.map(tp => (
+                  <button key={tp.id}
+                    onClick={() => { setTemplate(tp.id); setShowTemplates(false); setSaved(false); }}
+                    className={`w-full flex items-center gap-3 p-3 rounded-lg text-left transition-colors ${template === tp.id ? 'bg-primary/10 text-primary' : 'hover:bg-surface-hover text-foreground'}`}>
+                    <tp.icon className="h-5 w-5 shrink-0" />
+                    <div><p className="text-sm font-medium">{tp.label}</p><p className="text-xs text-muted-foreground">{tp.desc}</p></div>
                   </button>
                 ))}
               </div>
             )}
           </div>
-
           <div className="hidden md:flex items-center gap-1 mr-2">
             <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setZoom(Math.max(0.3, zoom - 0.1))}>
               <ZoomOut className="h-3.5 w-3.5" />
@@ -162,11 +153,11 @@ export default function ResumeEditor() {
           </div>
           <Button variant="outline" size="sm" onClick={handleSave} disabled={saving}>
             {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
-            <span className="hidden sm:inline ml-1">Save</span>
+            <span className="hidden sm:inline ml-1">{t('editor.save')}</span>
           </Button>
           <Button size="sm" onClick={handleDownload} disabled={downloading}>
             {downloading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
-            <span className="hidden sm:inline ml-1">Download</span>
+            <span className="hidden sm:inline ml-1">{t('editor.download')}</span>
           </Button>
         </div>
       </header>
