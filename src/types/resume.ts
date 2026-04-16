@@ -27,6 +27,8 @@ export interface ResumeData {
   skills: Array<{ name: string; icon?: string }>;
   hobbies: string[];
   websites: Array<{ id: string; label: string; url: string }>;
+  references: Array<{ id: string; name: string; title: string; company: string; phone: string; email: string }>;
+  cvFormat?: 'international' | 'cameroon' | 'nigeria' | 'canada';
 }
 
 export const defaultResumeData: ResumeData = {
@@ -43,14 +45,14 @@ export const defaultResumeData: ResumeData = {
   education: [
     { id: '1', startYear: '2014', endYear: '2016', degree: 'Degree Name', institution: 'University name here' },
     { id: '2', startYear: '2010', endYear: '2014', degree: 'Degree Name', institution: 'University name here' },
-    { id: '3', startYear: '2008', endYear: '2010', degree: 'Degree Name', institution: 'University name here' },
   ],
   experience: [
     { id: '1', startYear: '2020', endYear: 'Present', jobTitle: 'Senior UX Designer', company: 'Company Name', description: 'Lorem ipsum is simply dummy text of the printing and typesetting industry.' },
     { id: '2', startYear: '2017', endYear: '2019', jobTitle: 'Junior UX Designer', company: 'Company Name', description: 'Lorem ipsum is simply dummy text of the printing and typesetting industry.' },
-    { id: '3', startYear: '2015', endYear: '2017', jobTitle: 'UX Designer', company: 'Company Name', description: 'Lorem ipsum is simply dummy text of the printing and typesetting industry.' },
   ],
   skills: [{ name: 'UI/UX Design' }, { name: 'Figma', icon: 'https://cdn.simpleicons.org/figma' }, { name: 'Adobe XD', icon: 'https://cdn.simpleicons.org/adobexd' }, { name: 'Prototyping' }, { name: 'User Research' }],
   hobbies: ['Photography', 'Travel', 'Reading'],
   websites: [],
+  references: [],
+  cvFormat: 'international',
 };
