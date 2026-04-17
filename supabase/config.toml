@@ -1,1 +1,13 @@
 project_id = "iwopnnfbdfbrouteofcc"
+
+[functions.cv-analyze]
+verify_jwt = false
+
+[functions.cv-generate]
+verify_jwt = false
+
+[functions.cv-voice]
+verify_jwt = false
+
+[functions.pptx-generate]
+verify_jwt = false

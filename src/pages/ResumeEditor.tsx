@@ -9,8 +9,9 @@ import ResumePreview from '@/components/ResumePreview';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
-import { Download, ChevronLeft, Save, Loader2, Menu, X, ZoomIn, ZoomOut, FileText, Columns, AlignCenter, PenTool, Palette, Award, BookOpen, GraduationCap, Code2, Gem } from 'lucide-react';
+import { Download, ChevronLeft, Save, Loader2, Menu, X, ZoomIn, ZoomOut, FileText, Columns, AlignCenter, PenTool, Palette, Award, BookOpen, GraduationCap, Code2, Gem, Sparkles } from 'lucide-react';
 import LanguageToggle from '@/components/LanguageToggle';
+import AIAssistant from '@/components/AIAssistant';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 
@@ -42,6 +43,7 @@ export default function ResumeEditor() {
   const [zoom, setZoom] = useState(0.55);
   const [saved, setSaved] = useState(true);
   const [showTemplates, setShowTemplates] = useState(false);
+  const [aiOpen, setAiOpen] = useState(false);
 
   useEffect(() => {
     if (id && id !== 'new') {
@@ -125,6 +127,9 @@ export default function ResumeEditor() {
         </div>
         <div className="flex items-center gap-2">
           <LanguageToggle />
+          <Button variant="outline" size="sm" onClick={() => setAiOpen(true)} className="hidden md:flex bg-gradient-to-r from-primary/10 to-primary/5 border-primary/30">
+            <Sparkles className="h-4 w-4 mr-1 text-primary" /> AI
+          </Button>
           <div className="relative">
             <Button variant="outline" size="sm" onClick={() => setShowTemplates(!showTemplates)} className="hidden md:flex">
               <FileText className="h-4 w-4 mr-1" /> {t('editor.template')}
@@ -172,6 +177,7 @@ export default function ResumeEditor() {
           </div>
         </main>
       </div>
+      <AIAssistant open={aiOpen} onClose={() => setAiOpen(false)} resume={data} onApplyGenerated={(d) => { setData(d); setSaved(false); }} />
     </div>
   );
 }
