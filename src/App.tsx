@@ -11,6 +11,7 @@ import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import ResumeEditor from "./pages/ResumeEditor";
 import WireframeEditor from "./pages/WireframeEditor";
+import PptxGenerator from "./pages/PptxGenerator";
 import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
 
@@ -39,6 +40,7 @@ const App = () => (
                 <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
                 <Route path="/editor/:id" element={<ProtectedRoute><ResumeEditor /></ProtectedRoute>} />
                 <Route path="/wireframe/:id" element={<ProtectedRoute><WireframeEditor /></ProtectedRoute>} />
+                <Route path="/ai-slides" element={<ProtectedRoute><PptxGenerator /></ProtectedRoute>} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </AuthProvider>

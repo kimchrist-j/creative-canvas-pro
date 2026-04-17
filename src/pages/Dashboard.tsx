@@ -7,7 +7,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import LanguageToggle from '@/components/LanguageToggle';
-import { Plus, FileText, Layout, LogOut, Trash2, Clock, Loader2, Moon, Sun } from 'lucide-react';
+import { Plus, FileText, Layout, LogOut, Trash2, Clock, Loader2, Moon, Sun, Presentation, Sparkles } from 'lucide-react';
 import OnboardingGuide from '@/components/OnboardingGuide';
 
 export default function Dashboard() {
@@ -77,22 +77,33 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
           <button onClick={() => navigate('/editor/new')}
-            className="border-2 border-dashed border-border rounded-xl p-8 flex flex-col items-center gap-3 hover:border-foreground/30 hover:bg-surface transition-all group">
+            className="border-2 border-dashed border-border rounded-xl p-6 flex flex-col items-center gap-3 hover:border-foreground/30 hover:bg-surface transition-all group">
             <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
               <FileText className="h-6 w-6 text-foreground" />
             </div>
             <span className="font-medium text-foreground">{t('dashboard.newResume')}</span>
-            <span className="text-xs text-muted-foreground">Create a professional CV</span>
+            <span className="text-xs text-muted-foreground text-center">Create a professional CV</span>
           </button>
           <button onClick={() => navigate('/wireframe/new')}
-            className="border-2 border-dashed border-border rounded-xl p-8 flex flex-col items-center gap-3 hover:border-foreground/30 hover:bg-surface transition-all group">
+            className="border-2 border-dashed border-border rounded-xl p-6 flex flex-col items-center gap-3 hover:border-foreground/30 hover:bg-surface transition-all group">
             <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
               <Layout className="h-6 w-6 text-foreground" />
             </div>
             <span className="font-medium text-foreground">{t('dashboard.newWireframe')}</span>
-            <span className="text-xs text-muted-foreground">Design web & mobile layouts</span>
+            <span className="text-xs text-muted-foreground text-center">Design web & mobile layouts</span>
+          </button>
+          <button onClick={() => navigate('/ai-slides')}
+            className="relative border-2 border-dashed border-primary/30 rounded-xl p-6 flex flex-col items-center gap-3 hover:border-primary/60 hover:bg-primary/5 transition-all group overflow-hidden">
+            <div className="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-primary/20 text-primary text-[10px] font-bold uppercase flex items-center gap-1">
+              <Sparkles className="h-2.5 w-2.5" /> AI
+            </div>
+            <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+              <Presentation className="h-6 w-6 text-primary" />
+            </div>
+            <span className="font-medium text-foreground">{t('dashboard.aiPpt')}</span>
+            <span className="text-xs text-muted-foreground text-center">AI-generated PowerPoint</span>
           </button>
         </div>
 
