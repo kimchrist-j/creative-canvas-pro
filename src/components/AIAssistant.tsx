@@ -154,9 +154,29 @@ export default function AIAssistant({ open, onClose, resume, onApplyGenerated }:
                     <Volume2 className="h-4 w-4 text-primary" />
                     <span className="text-sm font-medium text-foreground">Listen to a recruiter explain your score</span>
                   </div>
-                  <div className="flex items-center gap-2 mb-3">
-                    <button onClick={() => setVoice('female')} className={`px-3 py-1.5 rounded-full text-xs font-medium transition ${voice === 'female' ? 'bg-primary text-primary-foreground' : 'bg-surface-hover text-muted-foreground'}`}>👩 Female (Sarah)</button>
-                    <button onClick={() => setVoice('male')} className={`px-3 py-1.5 rounded-full text-xs font-medium transition ${voice === 'male' ? 'bg-primary text-primary-foreground' : 'bg-surface-hover text-muted-foreground'}`}>👨 Male (George)</button>
+                  <div className="flex items-center gap-3 mb-3">
+                    <button
+                      onClick={() => setVoice('female')}
+                      className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium transition border ${voice === 'female' ? 'bg-primary text-primary-foreground border-primary' : 'bg-surface-hover text-muted-foreground border-border hover:border-primary/40'}`}
+                    >
+                      <img
+                        src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop&crop=faces"
+                        alt="Sarah"
+                        className="h-6 w-6 rounded-full object-cover ring-2 ring-background"
+                      />
+                      Sarah
+                    </button>
+                    <button
+                      onClick={() => setVoice('male')}
+                      className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-medium transition border ${voice === 'male' ? 'bg-primary text-primary-foreground border-primary' : 'bg-surface-hover text-muted-foreground border-border hover:border-primary/40'}`}
+                    >
+                      <img
+                        src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&h=80&fit=crop&crop=faces"
+                        alt="George"
+                        className="h-6 w-6 rounded-full object-cover ring-2 ring-background"
+                      />
+                      George
+                    </button>
                   </div>
                   <Button size="sm" onClick={playSpeech} disabled={audioLoading} className="w-full">
                     {audioLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : speaking ? <Pause className="h-4 w-4 mr-2" /> : <Play className="h-4 w-4 mr-2" />}
@@ -196,7 +216,7 @@ export default function AIAssistant({ open, onClose, resume, onApplyGenerated }:
               {loading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Wand2 className="h-4 w-4 mr-2" />}
               {loading ? 'Generating CV...' : 'Generate my CV'}
             </Button>
-            <p className="text-xs text-muted-foreground text-center">⚠️ This will replace your current CV content.</p>
+            <p className="text-xs text-muted-foreground text-center flex items-center justify-center gap-1.5"><AlertCircle className="h-3 w-3" /> This will replace your current CV content.</p>
           </div>
         )}
       </DialogContent>

@@ -4,7 +4,7 @@ import { useTheme } from '@/hooks/useTheme';
 import { useLanguage } from '@/hooks/useLanguage';
 import { Button } from '@/components/ui/button';
 import LanguageToggle from '@/components/LanguageToggle';
-import { FileText, Layout, Download, Sparkles, ArrowRight, CheckCircle2, Sun, Moon, Code2, Smartphone, Users, Zap } from 'lucide-react';
+import { FileText, Layout, Download, Sparkles, ArrowRight, CheckCircle2, Sun, Moon, Code2, Smartphone, Users, Zap, Play } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef } from 'react';
 
@@ -107,7 +107,7 @@ export default function Index() {
                   {t('hero.cta')} <ArrowRight className="h-4 w-4 ml-2" />
                 </Button>
                 <Button variant="outline" size="lg" className="rounded-full px-8 h-12 text-base border-white/20 text-white hover:bg-white/10" onClick={() => navigate('/auth')}>
-                  ▶ Watch Demo
+                  <Play className="h-4 w-4 mr-2 fill-current" /> Watch Demo
                 </Button>
               </motion.div>
 
@@ -193,7 +193,7 @@ export default function Index() {
         <div className="max-w-6xl mx-auto">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} className="text-center mb-12">
             <motion.h2 variants={fadeUp} custom={0} className="text-3xl md:text-4xl font-bold mb-4">10+ Professional Templates</motion.h2>
-            <motion.p variants={fadeUp} custom={1} className="text-white/50 text-lg">Local formats for Cameroon 🇨🇲, Nigeria 🇳🇬, and Canada 🇨🇦 migration</motion.p>
+            <motion.p variants={fadeUp} custom={1} className="text-white/50 text-lg">Local formats for Cameroon, Nigeria, and Canada migration</motion.p>
           </motion.div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {['Classic', 'Modern', 'Minimal', 'Bold', 'Creative', 'Executive', 'Formal', 'Academic', 'Tech', 'Elegant'].map((name, i) => (

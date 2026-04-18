@@ -28,7 +28,7 @@ Deno.serve(async (req) => {
       body: JSON.stringify({
         from: 'ResumeForge <onboarding@resend.dev>',
         to: [email],
-        subject: 'Welcome to ResumeForge! 🎉',
+        subject: 'Welcome to ResumeForge',
         html: `
           <div style="font-family: 'Helvetica Neue', Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 12px; overflow: hidden;">
             <div style="background: #1a1a2e; padding: 40px 30px; text-align: center;">
