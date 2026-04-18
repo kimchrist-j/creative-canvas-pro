@@ -238,9 +238,13 @@ export default function WireframeElementComponent({ element: el, selected, onUpd
       case 'feature-grid':
         return (
           <div className="w-full h-full grid grid-cols-3 gap-4 p-6" style={{ backgroundColor: el.fillColor, border: `1px solid ${el.strokeColor}`, borderRadius: el.borderRadius }}>
-            {[{ e: '⚡', t: 'Fast' }, { e: '🔒', t: 'Secure' }, { e: '🎨', t: 'Beautiful' }].map((f, i) => (
+            {[
+              { svg: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>, t: 'Fast' },
+              { svg: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>, t: 'Secure' },
+              { svg: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>, t: 'Beautiful' },
+            ].map((f, i) => (
               <div key={i} className="flex flex-col items-center gap-2 p-4 rounded-lg" style={{ backgroundColor: '#f8fafc' }}>
-                <span className="text-xl">{f.e}</span>
+                <span className="h-6 w-6" style={{ color: '#1e293b' }}>{f.svg}</span>
                 <span className="text-xs font-semibold" style={{ color: '#1e293b' }}>{f.t}</span>
                 <div className="h-2 w-3/4 rounded" style={{ backgroundColor: '#e2e8f0' }} />
               </div>

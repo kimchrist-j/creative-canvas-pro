@@ -109,13 +109,13 @@ export default function EditorSidebar({ data, onChange }: EditorSidebarProps) {
       </Section>
 
       {/* CV Format */}
-      <Section title="📍 CV Format">
+      <Section title="CV Format">
         <div className="grid grid-cols-2 gap-2">
           {[
-            { id: 'international', label: '🌍 International' },
-            { id: 'cameroon', label: '🇨🇲 Cameroon' },
-            { id: 'nigeria', label: '🇳🇬 Nigeria' },
-            { id: 'canada', label: '🇨🇦 Canada' },
+            { id: 'international', label: 'International' },
+            { id: 'cameroon', label: 'Cameroon' },
+            { id: 'nigeria', label: 'Nigeria' },
+            { id: 'canada', label: 'Canada' },
           ].map(fmt => (
             <button key={fmt.id} onClick={() => update('cvFormat', fmt.id)}
               className={`text-xs p-2 rounded-lg border transition-colors ${data.cvFormat === fmt.id ? 'border-primary bg-primary/10 text-primary' : 'border-border hover:bg-surface-hover text-foreground'}`}>
