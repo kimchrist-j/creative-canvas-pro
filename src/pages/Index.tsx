@@ -4,9 +4,9 @@ import { useTheme } from '@/hooks/useTheme';
 import { useLanguage } from '@/hooks/useLanguage';
 import { Button } from '@/components/ui/button';
 import LanguageToggle from '@/components/LanguageToggle';
-import { FileText, Layout, Download, Sparkles, ArrowRight, CheckCircle2, Sun, Moon, Code2, Smartphone, Users, Zap, Play } from 'lucide-react';
+import { FileText, Layout, Download, Sparkles, ArrowRight, CheckCircle2, Sun, Moon, Code2, Smartphone, Users, Zap, Play, Menu, X } from 'lucide-react';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 40 },
@@ -25,6 +25,7 @@ export default function Index() {
   const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] });
   const heroY = useTransform(scrollYProgress, [0, 1], [0, 100]);
   const heroOpacity = useTransform(scrollYProgress, [0, 0.7], [1, 0]);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   if (!loading && user) return <Navigate to="/dashboard" replace />;
 
@@ -40,34 +41,69 @@ export default function Index() {
   return (
     <div className="min-h-screen bg-[#1a1a2e] text-white overflow-x-hidden">
       {/* Nav */}
-      <header className="h-16 flex items-center justify-between px-6 max-w-7xl mx-auto sticky top-0 z-50 bg-[#1a1a2e]/90 backdrop-blur-md border-b border-white/5">
-        <div className="flex items-center gap-3">
-          {/* Logo */}
-          <div className="relative h-10 w-10">
-            <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-[#c8ff00] to-[#87cb00] rotate-3" />
-            <div className="relative h-full w-full rounded-xl bg-[#1a1a2e] flex items-center justify-center">
-              <span className="text-lg font-black text-[#c8ff00] tracking-tighter">RF</span>
+      <header className="sticky top-0 z-50 bg-[#1a1a2e]/90 backdrop-blur-md border-b border-white/5">
+        <div className="h-16 flex items-center justify-between px-4 md:px-6 max-w-7xl mx-auto gap-2">
+          <div className="flex items-center gap-2 md:gap-3 min-w-0">
+            {/* Logo */}
+            <div className="relative h-9 w-9 md:h-10 md:w-10 shrink-0">
+              <div className="absolute inset-0 rounded-xl bg-gradient-to-br from-[#c8ff00] to-[#87cb00] rotate-3" />
+              <div className="relative h-full w-full rounded-xl bg-[#1a1a2e] flex items-center justify-center">
+                <span className="text-base md:text-lg font-black text-[#c8ff00] tracking-tighter">RF</span>
+              </div>
+            </div>
+            <span className="text-base md:text-lg font-bold tracking-tight truncate">Resume<span className="text-[#c8ff00]">Forge</span></span>
+          </div>
+          <nav className="hidden lg:flex items-center gap-6 text-sm text-white/60">
+            <a href="#features" className="hover:text-white transition-colors">Features</a>
+            <a href="#templates" className="hover:text-white transition-colors">Templates</a>
+            <a href="#pricing" className="hover:text-white transition-colors">Pricing</a>
+          </nav>
+          {/* Desktop actions */}
+          <div className="hidden md:flex items-center gap-2 lg:gap-3">
+            <LanguageToggle />
+            <Button variant="ghost" size="icon" onClick={toggleTheme} className="h-9 w-9 text-white/60 hover:text-white hover:bg-white/10">
+              {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+            </Button>
+            <Button variant="ghost" size="sm" onClick={() => navigate('/auth')} className="text-white/80 hover:text-white hover:bg-white/10">
+              {t('nav.signin')}
+            </Button>
+            <Button size="sm" onClick={() => navigate('/auth')} className="bg-[#c8ff00] text-[#1a1a2e] hover:bg-[#b8ef00] font-semibold rounded-full px-4 lg:px-5">
+              {t('nav.getStarted')}
+            </Button>
+          </div>
+          {/* Mobile hamburger */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="md:hidden h-9 w-9 flex items-center justify-center rounded-lg text-white/80 hover:bg-white/10 shrink-0"
+            aria-label="Toggle menu"
+          >
+            {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </button>
+        </div>
+        {/* Mobile dropdown menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden border-t border-white/5 bg-[#1a1a2e]/95 backdrop-blur-md px-4 py-4 space-y-3">
+            <nav className="flex flex-col gap-1 text-sm text-white/70">
+              <a href="#features" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-lg hover:bg-white/5 hover:text-white">Features</a>
+              <a href="#templates" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-lg hover:bg-white/5 hover:text-white">Templates</a>
+              <a href="#pricing" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-lg hover:bg-white/5 hover:text-white">Pricing</a>
+            </nav>
+            <div className="flex items-center justify-between gap-2 pt-2 border-t border-white/5">
+              <LanguageToggle />
+              <Button variant="ghost" size="icon" onClick={toggleTheme} className="h-9 w-9 text-white/60 hover:text-white hover:bg-white/10">
+                {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+              </Button>
+            </div>
+            <div className="flex flex-col gap-2">
+              <Button variant="ghost" size="sm" onClick={() => navigate('/auth')} className="w-full text-white/80 hover:text-white hover:bg-white/10 justify-center">
+                {t('nav.signin')}
+              </Button>
+              <Button size="sm" onClick={() => navigate('/auth')} className="w-full bg-[#c8ff00] text-[#1a1a2e] hover:bg-[#b8ef00] font-semibold rounded-full">
+                {t('nav.getStarted')}
+              </Button>
             </div>
           </div>
-          <span className="text-lg font-bold tracking-tight">Resume<span className="text-[#c8ff00]">Forge</span></span>
-        </div>
-        <nav className="hidden md:flex items-center gap-6 text-sm text-white/60">
-          <a href="#features" className="hover:text-white transition-colors">Features</a>
-          <a href="#templates" className="hover:text-white transition-colors">Templates</a>
-          <a href="#pricing" className="hover:text-white transition-colors">Pricing</a>
-        </nav>
-        <div className="flex items-center gap-3">
-          <LanguageToggle />
-          <Button variant="ghost" size="icon" onClick={toggleTheme} className="h-9 w-9 text-white/60 hover:text-white hover:bg-white/10">
-            {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-          </Button>
-          <Button variant="ghost" size="sm" onClick={() => navigate('/auth')} className="text-white/80 hover:text-white hover:bg-white/10">
-            {t('nav.signin')}
-          </Button>
-          <Button size="sm" onClick={() => navigate('/auth')} className="bg-[#c8ff00] text-[#1a1a2e] hover:bg-[#b8ef00] font-semibold rounded-full px-5">
-            {t('nav.getStarted')}
-          </Button>
-        </div>
+        )}
       </header>
 
       {/* Hero */}
